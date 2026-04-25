@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>複製工具</title>
+<style>
+body {
+  font-family: sans-serif;
+  padding: 20px;
+  line-height: 1.8;
+}
+.block {
+  margin-bottom: 12px;
+}
+button {
+  margin-right: 8px;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<h3>📋 教學複製工具</h3>
+
+<div class="block">
+  <button onclick="copyText(this)">📋 複製</button>
+  <span>這是第一段教學內容</span>
+</div>
+
+<div class="block">
+  <button onclick="copyText(this)">📋 複製</button>
+  <span>這是第二段教學內容</span>
+</div>
+
+<div class="block">
+  <button onclick="copyText(this)">📋 複製</button>
+  <span>這是第三段教學內容</span>
+</div>
+
+<script>
+function copyText(btn) {
+  const text = btn.nextElementSibling.innerText;
+
+  navigator.clipboard.writeText(text).then(() => {
+    btn.innerText = "✅ 已複製";
+    setTimeout(() => btn.innerText = "📋 複製", 1500);
+  }).catch(() => {
+    alert("複製失敗，請手動複製");
+  });
+}
+</script>
+
+</body>
+</html>
