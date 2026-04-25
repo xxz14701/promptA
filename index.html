@@ -1,20 +1,138 @@
-<div class="block">
-  <button onclick="selectText(this)">📋 複製</button>
-  <span class="text">這是一段教材內容</span>
-</div>
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>教材一鍵複製工具</title>
+
+<style>
+body {
+  font-family: "Noto Sans TC", sans-serif;
+  background: #f5f7fb;
+  padding: 20px;
+}
+
+h2 {
+  margin-bottom: 10px;
+}
+
+.block {
+  background: white;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.text {
+  flex: 1;
+}
+
+button {
+  margin-right: 10px;
+  border: none;
+  background: #0ea5e9;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button.success {
+  background: #22c55e;
+}
+
+.section {
+  font-weight: bold;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: #0369a1;
+}
+</style>
+</head>
+
+<body>
+
+<h2>📋 教材一鍵複製</h2>
+
+<div id="container"></div>
 
 <script>
-function selectText(btn) {
-  const textEl = btn.nextElementSibling;
+// ⭐⭐⭐ 教材貼這裡 ⭐⭐⭐
+const content = `
+請輸入你的姓名
+今天學到什麼？
+請寫下三個重點
 
-  const range = document.createRange();
-  range.selectNodeContents(textEl);
+【進階題】
+請說明今天最困難的部分
 
-  const selection = window.getSelection();
-  selection.removeAllRanges();
-  selection.addRange(range);
+【延伸】
+回家請完成第5頁
+`;
+// ⭐⭐⭐ 結束 ⭐⭐⭐
 
-  btn.innerText = "👉 已選取（Ctrl+C）";
-  setTimeout(() => btn.innerText = "📋 複製", 2000);
+
+// 自動切段
+const lines = content.split("\n");
+const container = document.getElementById("container");
+
+lines.forEach(line => {
+  const trimmed = line.trim();
+
+  if (!trimmed) return;
+
+  // 判斷是否是標題
+  if (trimmed.startsWith("【")) {
+    const section = document.createElement("div");
+    section.className = "section";
+    section.innerText = trimmed;
+    container.appendChild(section);
+    return;
+  }
+
+  const div = document.createElement("div");
+  div.className = "block";
+
+  div.innerHTML = `
+    <button onclick="copyText(this)">📋</button>
+    <div class="text">${trimmed}</div>
+  `;
+
+  container.appendChild(div);
+});
+
+function copyText(btn) {
+  const text = btn.nextElementSibling.innerText;
+
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+
+  document.body.appendChild(textarea);
+  textarea.select();
+
+  try {
+    document.execCommand("copy");
+
+    btn.classList.add("success");
+    btn.innerText = "✔";
+
+    setTimeout(() => {
+      btn.classList.remove("success");
+      btn.innerText = "📋";
+    }, 1200);
+
+  } catch {
+    btn.innerText = "❌";
+  }
+
+  document.body.removeChild(textarea);
 }
 </script>
+
+</body>
+</html>
