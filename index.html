@@ -2,43 +2,83 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<title>複製工具</title>
+<title>我的教材複製工具</title>
+
 <style>
 body {
-  font-family: sans-serif;
+  font-family: "Noto Sans TC", sans-serif;
   padding: 20px;
-  line-height: 1.8;
+  background: #f5f7fb;
 }
+
+h2 {
+  margin-bottom: 10px;
+}
+
 .block {
-  margin-bottom: 12px;
+  background: white;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: center;
 }
+
 button {
-  margin-right: 8px;
+  margin-right: 10px;
+  border: none;
+  background: #4CAF50;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
   cursor: pointer;
+}
+
+button:hover {
+  background: #45a049;
+}
+
+.text {
+  flex: 1;
 }
 </style>
 </head>
 
 <body>
 
-<h3>📋 教學複製工具</h3>
+<h2>📋 教材一鍵複製</h2>
 
-<div class="block">
-  <button onclick="copyText(this)">📋 複製</button>
-  <span>這是第一段教學內容</span>
-</div>
-
-<div class="block">
-  <button onclick="copyText(this)">📋 複製</button>
-  <span>這是第二段教學內容</span>
-</div>
-
-<div class="block">
-  <button onclick="copyText(this)">📋 複製</button>
-  <span>這是第三段教學內容</span>
-</div>
+<div id="container"></div>
 
 <script>
+// ⭐⭐⭐ 只要改這裡 ⭐⭐⭐
+const content = `
+請輸入你的姓名
+今天學到什麼？
+請寫下三個重點
+這是一段教學說明
+這是延伸練習題
+`;
+// ⭐⭐⭐ 改到這裡結束 ⭐⭐⭐
+
+
+// 自動切段
+const lines = content.trim().split("\n");
+const container = document.getElementById("container");
+
+lines.forEach(line => {
+  const div = document.createElement("div");
+  div.className = "block";
+
+  div.innerHTML = `
+    <button onclick="copyText(this)">📋 複製</button>
+    <div class="text">${line}</div>
+  `;
+
+  container.appendChild(div);
+});
+
 function copyText(btn) {
   const text = btn.nextElementSibling.innerText;
 
@@ -46,7 +86,7 @@ function copyText(btn) {
     btn.innerText = "✅ 已複製";
     setTimeout(() => btn.innerText = "📋 複製", 1500);
   }).catch(() => {
-    alert("複製失敗，請手動複製");
+    alert("請手動複製");
   });
 }
 </script>
